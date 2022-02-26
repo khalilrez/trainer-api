@@ -1,7 +1,6 @@
 const dbConfig = require("../config/db.config.js");
 
 const Sequelize = require("sequelize");
-const { associationSetup } = require("./associations.js");
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
@@ -23,10 +22,24 @@ db.sequelize = sequelize;
 
 db.diets = require("./diet.model.js")(sequelize, Sequelize);
 db.ingredients = require("./ingredient.model")(sequelize, Sequelize);
-db.users = require("./user.model")(sequelize, Sequelize);
-db.roles = require("./role.model")(sequelize, Sequelize);
 db.meals = require("./meal.model")(sequelize, Sequelize);
+db.user = require("../models/user.model.js")(sequelize, Sequelize);
+db.role = require("../models/role.model.js")(sequelize, Sequelize);
 
-associationSetup(sequelize);
+db.role.belongsToMany(db.user, {
+  through: "user_roles",
+  foreignKey: "roleId",
+  otherKey: "userId",
+});
+db.user.belongsToMany(db.role, {
+  through: "user_roles",
+  foreignKey: "userId",
+  otherKey: "roleId",
+});
+db.ROLES = ["user", "admin", "coach"];
+
+db.diets.belongsTo(db.user);
+db.meals.belongsToMany(db.diets, { through: "diet_meals" });
+db.ingredients.belongsToMany(db.meals, { through: "meal_ingredients" });
 
 module.exports = db;
