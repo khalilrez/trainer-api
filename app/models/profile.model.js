@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
     gender: {
       type: Sequelize.STRING,
     },
-    adress: {
+    address: {
       type: Sequelize.STRING,
     },
     dob: {
@@ -28,6 +28,13 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
     },
   });
+
+  Profile.createProfile = async function (user) {
+    let profile = await this.create({
+      userId: user.id,
+    });
+    return profile.id;
+  };
 
   return Profile;
 };
