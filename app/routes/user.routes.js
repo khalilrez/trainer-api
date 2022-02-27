@@ -73,6 +73,6 @@ router.get("/profile/:id", userController.getProfile);
  *       200:
  *         description: Profile was updated successfully.
  */
-router.post("/profile/:id", userController.updateProfile);
+router.put("/profile/:id", userController.updateProfile);
 
 module.exports = router;
